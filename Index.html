@@ -39,7 +39,7 @@
     /* 게임 홈페이지 스타일 웹 랜딩 화면 (#title-screen) */
     #title-screen {
       display: flex; flex-direction: column; justify-content: space-between;
-      flex: 1; padding: 10px 0; position: relative; z-index: 50;
+      flex: 1; padding: 10px 0; position: relative; z-index: 20;
     }
 
     .landing-header-nav {
@@ -73,20 +73,20 @@
     
     .landing-btn {
       background: rgba(12, 16, 28, 0.9); border: 1px solid var(--border-line);
-      padding: 16px; border-radius: 12px; font-size: 0.9rem; font-weight: 800; color: #e2e8f0;
+      padding: 14px 16px; border-radius: 12px; font-size: 0.9rem; font-weight: 800; color: #e2e8f0;
       cursor: pointer; display: flex; justify-content: space-between; align-items: center;
-      transition: 0.1s; position: relative; z-index: 60;
+      transition: 0.1s;
     }
-    .landing-btn span { font-size: 0.62rem; color: var(--text-sub); font-weight: 600; pointer-events: none; }
+    .landing-btn span { font-size: 0.62rem; color: var(--text-sub); font-weight: 600; }
     .landing-btn.primary { background: var(--accent-blue); color: #050508; border: none; }
     .landing-btn:active { transform: scale(0.98); }
 
     /* 구글 로그인 웹스타일 박스 */
     .google-login-box {
       background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-line);
-      border-radius: 12px; padding: 14px; display: flex; align-items: center; justify-content: center; gap: 10px;
+      border-radius: 12px; padding: 12px; display: flex; align-items: center; justify-content: center; gap: 10px;
       font-size: 0.78rem; font-weight: 800; color: #fff; cursor: pointer; margin-bottom: 15px;
-      transition: 0.2s; position: relative; z-index: 60;
+      transition: 0.2s;
     }
     .google-login-box:hover { background: rgba(255, 255, 255, 0.08); border-color: var(--accent-blue); }
     .google-login-box:active { transform: scale(0.98); }
@@ -99,7 +99,7 @@
     .top-nav {
       display: flex; justify-content: space-between; align-items: center;
       padding-bottom: 12px; border-bottom: 1px solid var(--border-line); 
-      margin-bottom: 10px; position: relative; z-index: 50;
+      margin-bottom: 10px;
     }
     .btn-nav-action {
       background: rgba(56, 189, 248, 0.1); border: 1px solid var(--border-line);
@@ -108,7 +108,7 @@
     }
 
     /* 로비 화면 */
-    #lobby-screen { display: none; flex-direction: column; gap: 10px; flex: 1; position: relative; z-index: 50; }
+    #lobby-screen { display: none; flex-direction: column; gap: 10px; flex: 1; }
     .lobby-header h2 { font-size: 1.1rem; font-weight: 900; color: #fff; }
     .lobby-header p { font-size: 0.7rem; color: var(--text-sub); }
     
@@ -122,18 +122,17 @@
       background: var(--card-bg); border: 1px solid var(--border-line);
       border-radius: 12px; padding: 12px; cursor: pointer;
       display: flex; gap: 12px; align-items: center; backdrop-filter: blur(6px);
-      position: relative; z-index: 60;
     }
     .case-item-card:active { border-color: var(--accent-blue); background: rgba(56,189,248,0.05); }
-    .case-thumb { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border-line); background: #111; pointer-events: none; }
-    .case-info { flex: 1; pointer-events: none; }
+    .case-thumb { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border-line); background: #111; }
+    .case-info { flex: 1; }
     .case-title { font-size: 0.82rem; font-weight: 800; color: #fff; margin-bottom: 4px; }
     .case-meta-row { display: flex; justify-content: space-between; align-items: center; }
     .case-meta { font-size: 0.62rem; color: var(--accent-yellow); font-weight: 700; }
     .case-diff { font-size: 0.55rem; padding: 2px 6px; border-radius: 4px; font-weight: 800; background: rgba(56, 189, 248, 0.15); color: var(--accent-blue); }
 
     /* 인게임 플레이 화면 */
-    #game-screen { display: none; flex-direction: column; gap: 10px; flex: 1; position: relative; z-index: 50; }
+    #game-screen { display: none; flex-direction: column; gap: 10px; flex: 1; }
 
     .case-card {
       background: var(--card-bg); border: 1px solid var(--border-line);
@@ -247,12 +246,12 @@
     </div>
 
     <div class="landing-menu-list">
-      <button class="landing-btn primary" onclick="showLobby('normal')">
+      <div class="landing-btn primary" onclick="showLobby('normal')">
         새로운 수사 게임 시작 <span>START GAME</span>
-      </button>
-      <button class="landing-btn" onclick="showLobby('longform')">
+      </div>
+      <div class="landing-btn" onclick="showLobby('longform')">
         심층 대서사시 에피소드 <span>DEEP STORY</span>
-      </button>
+      </div>
     </div>
 
     <div>
@@ -410,6 +409,7 @@
     document.getElementById('lobbyTitleText').innerText = mode === 'longform' ? "심층 대서사시 에피소드" : "사건 아카이브 (SCIENCE CASES)";
     document.getElementById('lobbyDescText').innerText = "탐구할 과학 미션 케이스를 선택하세요.";
 
+    // 화면 전환 스타일 적용 수정
     document.getElementById('title-screen').style.display = 'none';
     document.getElementById('lobby-screen').style.display = 'flex';
     document.getElementById('game-screen').style.display = 'none';
