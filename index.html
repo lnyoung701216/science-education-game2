@@ -2,319 +2,608 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Science Education Game - 공식 랜딩 페이지</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>생태계 시뮬레이터</title>
   <style>
     @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
     :root {
-      --bg-color: #0b0f19;
-      --card-bg: rgba(255, 255, 255, 0.03);
-      --border-color: rgba(255, 255, 255, 0.08);
-      --accent-color: #3b82f6;
-      --accent-hover: #2563eb;
-      --text-main: #f8fafc;
-      --text-sub: #94a3b8;
+      --bg-light: #f8fafc;
+      --card-bg: #ffffff;
+      --border-line: #e2e8f0;
+      --accent-green: #10b981;
+      --accent-green-dark: #059669;
+      --text-main: #0f172a;
+      --text-sub: #64748b;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', sans-serif; -webkit-tap-highlight-color: transparent; }
 
     body {
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow-x: hidden;
-      background-image: 
-        radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
-        radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 40%);
+      background: #eef2f6; color: var(--text-main);
+      display: flex; justify-content: center; min-height: 100vh; overflow-x: hidden;
     }
 
-    .landing-wrapper {
-      width: 100%;
-      max-width: 1200px;
-      padding: 40px 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 60px;
+    .app-container {
+      width: 100%; max-width: 480px; 
+      background: var(--bg-light);
+      padding: 16px; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between;
+      position: relative; box-shadow: 0 0 40px rgba(0,0,0,0.1);
     }
 
-    /* 상단 네비게이션 바 */
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 30px;
+    .landing-header-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-bottom: 12px; border-bottom: 1px solid var(--border-line);
+      margin-bottom: 15px;
+    }
+
+    .landing-logo {
+      font-size: 0.9rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 6px;
+    }
+    .landing-logo span { color: var(--accent-green); }
+
+    .nav-links { display: flex; gap: 12px; font-size: 0.7rem; color: var(--text-sub); font-weight: 600; }
+
+    .landing-hero {
       background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-line);
       border-radius: 16px;
+      padding: 20px 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+      margin-bottom: 12px;
     }
 
-    .logo {
-      font-size: 1.1rem;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    .main-top-tag { font-size: 0.62rem; color: var(--accent-green-dark); font-weight: 800; margin-bottom: 8px; }
+    .main-title { font-size: 1.45rem; font-weight: 900; color: var(--text-main); margin-bottom: 10px; letter-spacing: -0.5px; line-height: 1.3; }
+    .main-desc { font-size: 0.74rem; color: var(--text-sub); line-height: 1.5; margin-bottom: 16px; }
+
+    .landing-btn-group { display: flex; gap: 8px; margin-bottom: 14px; }
+    .landing-action-btn {
+      flex: 1; padding: 11px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 800; cursor: pointer; text-align: center; transition: 0.1s;
+    }
+    .landing-action-btn.primary { background: var(--accent-green); color: #fff; border: none; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); }
+    .landing-action-btn.secondary { background: #f1f5f9; color: var(--text-main); border: 1px solid var(--border-line); }
+    .landing-action-btn:active { transform: scale(0.98); }
+
+    .hero-stats-row {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+      border-top: 1px solid var(--border-line); padding-top: 12px;
+    }
+    .stat-box { background: #f8fafc; border: 1px solid var(--border-line); border-radius: 8px; padding: 8px; text-align: center; }
+    .stat-label { font-size: 0.58rem; color: var(--text-sub); margin-bottom: 2px; }
+    .stat-val { font-size: 0.75rem; font-weight: 800; color: var(--text-main); }
+
+    #features-section {
+      display: none; flex-direction: column; gap: 8px; margin-bottom: 12px; animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    .feature-card-item {
+      background: var(--card-bg); border: 1px solid var(--border-line);
+      border-radius: 10px; padding: 10px 12px; display: flex; gap: 10px; align-items: center;
+    }
+    .feature-icon-box { font-size: 1.1rem; background: rgba(16,185,129,0.1); padding: 6px; border-radius: 6px; }
+    .feature-text-box h4 { font-size: 0.75rem; font-weight: 800; color: var(--text-main); margin-bottom: 2px; }
+    .feature-text-box p { font-size: 0.65rem; color: var(--text-sub); line-height: 1.35; }
+
+    .google-login-box {
+      background: var(--card-bg); border: 1px solid var(--border-line);
+      border-radius: 10px; padding: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;
+      font-size: 0.75rem; font-weight: 800; color: var(--text-main); cursor: pointer; margin-bottom: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02); transition: 0.2s;
+    }
+    .google-login-box:hover { border-color: var(--accent-green); }
+
+    .landing-footer {
+      font-size: 0.58rem; color: var(--text-sub); text-align: center; border-top: 1px solid var(--border-line); padding-top: 8px;
     }
 
-    .logo span {
-      color: var(--accent-color);
+    .top-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-bottom: 12px; border-bottom: 1px solid var(--border-line); 
+      margin-bottom: 10px; background: var(--card-bg); padding: 10px; border-radius: 10px;
+    }
+    .btn-nav-action {
+      background: rgba(16, 185, 129, 0.1); border: 1px solid var(--border-line);
+      color: var(--accent-green-dark); padding: 6px 10px; border-radius: 6px;
+      font-size: 0.7rem; font-weight: 800; cursor: pointer;
     }
 
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 20px;
+    #lobby-screen { display: none; flex-direction: column; gap: 10px; flex: 1; }
+    .lobby-header h2 { font-size: 1.05rem; font-weight: 900; color: var(--text-main); }
+    .lobby-header p { font-size: 0.68rem; color: var(--text-sub); }
+    
+    .case-scroll-area {
+      flex: 1; max-height: 70vh; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px;
+    }
+    .case-scroll-area::-webkit-scrollbar { width: 4px; }
+    .case-scroll-area::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+    .case-item-card {
+      background: var(--card-bg); border: 1px solid var(--border-line);
+      border-radius: 10px; padding: 10px; cursor: pointer;
+      display: flex; gap: 10px; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+    .case-item-card:active { border-color: var(--accent-green); background: #f0fdf4; }
+    .case-thumb { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; border: 1px solid var(--border-line); background: #eee; }
+    .case-info { flex: 1; }
+    .case-title { font-size: 0.78rem; font-weight: 800; color: var(--text-main); margin-bottom: 3px; }
+    .case-meta-row { display: flex; justify-content: space-between; align-items: center; }
+    .case-meta { font-size: 0.58rem; color: var(--text-sub); font-weight: 700; }
+    .case-diff { font-size: 0.52rem; padding: 2px 5px; border-radius: 4px; font-weight: 800; background: #e0f2fe; color: #0284c7; }
+
+    #game-screen { display: none; flex-direction: column; gap: 8px; flex: 1; }
+
+    .case-card {
+      background: var(--card-bg); border: 1px solid var(--border-line);
+      border-radius: 10px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+    .img-wrapper { width: 100%; height: 85px; position: relative; background: #000; }
+    .case-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; }
+    .case-overlay {
+      position: absolute; top: 6px; left: 6px;
+      background: rgba(15,23,42,0.85); border: 1px solid rgba(255,255,255,0.2);
+      padding: 3px 6px; border-radius: 4px; font-size: 0.55rem; color: #38bdf8; font-weight: 900;
     }
 
-    .nav-links {
-      display: flex;
-      gap: 20px;
-      list-style: none;
-      font-size: 0.9rem;
-      color: var(--text-sub);
+    .case-content { padding: 8px 10px; }
+    .case-desc { font-size: 0.68rem; line-height: 1.4; color: var(--text-sub); margin-bottom: 6px; }
+    
+    .hint-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      background: #f8fafc; padding: 5px 8px; border-radius: 6px; border: 1px solid var(--border-line);
+    }
+    .btn-hint {
+      background: #fef9c3; border: 1px solid #fde047;
+      color: #854d0e; font-size: 0.62rem; font-weight: 800; padding: 4px 8px; border-radius: 4px; cursor: pointer;
     }
 
-    .nav-links a {
-      text-decoration: none;
-      color: var(--text-sub);
-      transition: color 0.2s;
+    .stage-tracker {
+      background: var(--card-bg); border: 1px solid var(--border-line);
+      border-radius: 8px; padding: 6px 10px; display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.68rem; font-weight: 800; box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+    .stage-dots { display: flex; gap: 5px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #e2e8f0; border: 1px solid var(--border-line); }
+    .dot.active { background: var(--accent-green); box-shadow: 0 0 6px rgba(16,185,129,0.4); }
+    .dot.cleared { background: #059669; }
+
+    .eeg-monitor-card {
+      background: var(--card-bg); border: 1px solid var(--border-line);
+      border-radius: 8px; padding: 6px 10px; display: flex; align-items: center; justify-content: space-between;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+    .bpm-value { font-size: 1.05rem; font-weight: 900; color: #059669; }
+    canvas#eegCanvas { width: 130px; height: 24px; background: #0f172a; border-radius: 4px; }
+
+    .chat-history {
+      flex: 1; background: var(--card-bg); border: 1px solid var(--border-line);
+      border-radius: 10px; padding: 8px; min-height: 75px; max-height: 110px;
+      overflow-y: auto; display: flex; flex-direction: column; gap: 5px; box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+    .chat-history::-webkit-scrollbar { width: 4px; }
+    .chat-history::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+    .chat-item { font-size: 0.68rem; line-height: 1.35; }
+    .q-text { color: var(--accent-green-dark); font-weight: 700; }
+    .a-text { color: var(--text-main); background: #f8fafc; padding: 5px 7px; border-radius: 6px; border: 1px solid var(--border-line); margin-top: 2px; }
+
+    .input-box-container {
+      background: var(--card-bg); border: 1px solid var(--border-line);
+      border-radius: 10px; padding: 5px; display: flex; gap: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+    .text-input {
+      flex: 1; background: #f8fafc; border: 1px solid var(--border-line);
+      border-radius: 6px; padding: 8px 10px; color: var(--text-main); font-size: 0.75rem; outline: none;
+    }
+    .btn-send {
+      background: var(--accent-green); border: none; color: #fff;
+      padding: 0 14px; border-radius: 6px; font-weight: 900; font-size: 0.75rem; cursor: pointer;
     }
 
-    .nav-links a:hover {
-      color: var(--text-main);
+    #confession-modal {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.85); z-index: 999;
+      flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center;
     }
-
-    /* 구글 로그인 버튼 (웹사이트 스타일) */
-    .btn-google {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: #ffffff;
-      color: #1f2937;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    .confession-box {
+      background: #ffffff; border: 2px solid #fb7185; border-radius: 14px;
+      padding: 16px; width: 100%; max-width: 360px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      display: flex; flex-direction: column; gap: 8px; text-align: center;
     }
-
-    .btn-google:hover {
-      background: #f3f4f6;
-      transform: translateY(-1px);
-    }
-
-    /* 히어로 섹션 (랜딩페이지 메인) */
-    .hero-section {
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 24px;
-      padding: 40px 0;
-    }
-
-    .hero-badge {
-      background: rgba(59, 130, 246, 0.1);
-      color: var(--accent-color);
-      border: 1px solid rgba(59, 130, 246, 0.2);
-      padding: 6px 16px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-    }
-
-    .hero-title {
-      font-size: 3.2rem;
-      font-weight: 900;
-      line-height: 1.2;
-      letter-spacing: -1px;
-      max-width: 800px;
-    }
-
-    .hero-title span {
-      background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero-desc {
-      font-size: 1.1rem;
-      color: var(--text-sub);
-      max-width: 600px;
-      line-height: 1.5;
-    }
-
-    .hero-cta-group {
-      display: flex;
-      gap: 12px;
-      margin-top: 10px;
-    }
-
-    .btn-primary {
-      background: var(--accent-color);
-      color: white;
-      border: none;
-      padding: 14px 28px;
-      border-radius: 10px;
-      font-size: 0.95rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.2s;
-      text-decoration: none;
-    }
-
-    .btn-primary:hover {
-      background: var(--accent-hover);
-      transform: translateY(-2px);
-    }
-
-    .btn-secondary {
-      background: var(--card-bg);
-      color: var(--text-main);
-      border: 1px solid var(--border-color);
-      padding: 14px 28px;
-      border-radius: 10px;
-      font-size: 0.95rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .btn-secondary:hover {
-      background: rgba(255,255,255,0.06);
-      border-color: rgba(255,255,255,0.2);
-    }
-
-    /* 특징 카드 섹션 */
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
-
-    .feature-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 30px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      transition: transform 0.2s, border-color 0.2s;
-    }
-
-    .feature-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(59, 130, 246, 0.3);
-    }
-
-    .feature-icon {
-      font-size: 1.8rem;
-      margin-bottom: 4px;
-    }
-
-    .feature-title {
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: var(--text-main);
-    }
-
-    .feature-desc {
-      font-size: 0.9rem;
-      color: var(--text-sub);
-      line-height: 1.5;
-    }
-
-    /* 반응형 스타일 */
-    @media (max-width: 768px) {
-      .hero-title { font-size: 2.3rem; }
-      .features-grid { grid-template-columns: 1fr; }
-      .nav-links { display: none; }
-      header { padding: 12px 20px; }
+    .confession-title { color: #e11d48; font-size: 0.95rem; font-weight: 900; }
+    .confession-dialogue { font-size: 0.72rem; line-height: 1.4; color: var(--text-main); background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid var(--border-line); text-align: left; }
+    .btn-modal-close {
+      background: var(--accent-green); border: none; color: #fff; padding: 10px; border-radius: 6px;
+      font-weight: 900; font-size: 0.75rem; cursor: pointer; text-align: center; margin-top: 4px;
     }
   </style>
 </head>
 <body>
 
-<div class="landing-wrapper">
-  <!-- 상단 네비게이션 -->
-  <header>
-    <div class="logo">SCIENCE <span>GAME</span></div>
-    <div class="nav-right">
-      <ul class="nav-links">
-        <li><a href="#features">기능 소개</a></li>
-        <li><a href="#about">프로젝트</a></li>
-        <li><a href="#support">고객지원</a></li>
-      </ul>
-      <!-- 구글 로그인 버튼 -->
-      <button class="btn-google" onclick="googleLogin()">
-        <svg width="18" height="18" viewBox="0 0 24 24">
-          <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
-          <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.19v3.15C3.17 21.37 7.23 24 12 24z"/>
-          <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.19C.43 8.1 0 9.8 0 12s.43 3.9 1.19 5.42l4.09-3.15z"/>
-          <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.23 0 3.17 2.63 1.19 6.58l4.09 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
-        </svg>
-        Google 로그인
-      </button>
-    </div>
-  </header>
+<div class="app-container">
 
-  <!-- 메인 히어로 섹션 -->
-  <section class="hero-section">
-    <div class="hero-badge">🚀 2026 교육 프로젝트 오픈</div>
-    <h1 class="hero-title">게임을 통해 배우는<br><span>차세대 과학 에듀테크</span></h1>
-    <p class="hero-desc">어려운 과학 원리와 탐구 과정을 흥미진진한 인터랙티브 게임으로 경험하세요. 지금 구글 계정으로 간편하게 시작할 수 있습니다.</p>
-    
-    <div class="hero-cta-group">
-      <button class="btn-primary" onclick="startGame()">게임 시작하기</button>
-      <button class="btn-secondary" onclick="exploreMore()">소개 둘러보기</button>
-    </div>
-  </section>
+  <div class="top-nav" id="topNav" style="display:none;">
+    <button class="btn-nav-action" onclick="showTitle()">◀ 홈 화면</button>
+    <div style="font-size:0.62rem; color:var(--accent-green-dark); font-weight:800;" id="userHeaderBadge">GUEST USER</div>
+  </div>
 
-  <!-- 특징 카드 섹션 -->
-  <section class="features-grid" id="features">
-    <div class="feature-card">
-      <div class="feature-icon">🎮</div>
-      <div class="feature-title">몰입형 인터랙티브 게임</div>
-      <div class="feature-desc">단순 암기식 학습에서 벗어나, 직접 추리하고 실험하며 자연스럽게 과학 개념을 체득합니다.</div>
+  <div id="title-screen">
+    <div>
+      <div class="landing-header-nav">
+        <div class="landing-logo">🌱 생태계 시뮬레이터</div>
+        <div class="nav-links">
+          <span>시뮬레이터</span>
+          <span>AI 분석</span>
+          <span>DATA</span>
+        </div>
+      </div>
+
+      <div class="landing-hero">
+        <div class="main-top-tag">🌿 차세대 생태 학습 솔루션</div>
+        <div class="main-title">변화하는 생태계를<br>직접 관찰하세요.</div>
+        <div class="main-desc">시뮬레이션 환경을 직접 조절하고 생태계의 복잡한 균형과 상호작용을 과학적 지표와 데이터로 생생하게 분석해보세요.</div>
+        
+        <div class="landing-btn-group">
+          <div class="landing-action-btn primary" onclick="showLobby('normal')">시뮬레이터 시작</div>
+          <div class="landing-action-btn secondary" onclick="toggleFeatures()">소개 둘러보기</div>
+        </div>
+
+        <div class="hero-stats-row">
+          <div class="stat-box">
+            <div class="stat-label">분석 시간</div>
+            <div class="stat-val">00:00:25</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">AI 상태</div>
+            <div class="stat-val" style="color:var(--accent-green);">ON</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">DATA</div>
+            <div class="stat-val">실시간 연동</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="features-section">
+        <div class="feature-card-item">
+          <div class="feature-icon-box">📊</div>
+          <div class="feature-text-box">
+            <h4>실시간 생태계 데이터 분석</h4>
+            <p>변화하는 환경에 따른 개체 수 변동과 상관관계를 정밀한 그래프와 수치로 추적합니다.</p>
+          </div>
+        </div>
+        <div class="feature-card-item">
+          <div class="feature-icon-box">🤖</div>
+          <div class="feature-text-box">
+            <h4>인공지능 프로파일링 추론</h4>
+            <p>생태 데이터 속 허점과 불균형 요소를 AI 피드백을 통해 효과적으로 교정합니다.</p>
+          </div>
+        </div>
+        <div class="feature-card-item">
+          <div class="feature-icon-box">☁️</div>
+          <div class="feature-text-box">
+            <h4>구글 클라우드 자동 세이브</h4>
+            <p>로그인 한 번으로 탐구 기록과 실험 결과를 언제 어디서나 안전하게 연동하세요.</p>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon">☁️</div>
-      <div class="feature-title">구글 클라우드 연동</div>
-      <div class="feature-desc">구글 계정 하나로 언제 어디서나 접속하고, 나의 학습 진행 상황과 플레이 기록을 안전하게 저장하세요.</div>
+
+    <div>
+      <div class="google-login-box" onclick="googleLogin()">
+        <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.19v3.15C3.17 21.37 7.23 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.19C.43 8.1 0 9.8 0 12s.43 3.9 1.19 5.42l4.09-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.23 0 3.17 2.63 1.19 6.58l4.09 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
+        Google 계정으로 간편 로그인 / 세이브 연동
+      </div>
+
+      <div class="landing-footer">
+        © 2026 Ecosystem Simulation Project. All rights reserved.
+      </div>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon">🔬</div>
-      <div class="feature-title">실생활 과학 원리 응용</div>
-      <div class="feature-desc">법과학, 생체 신호, 물리 법칙 등 일상 속 숨겨진 과학적 요소를 게임 미션으로 풀어냈습니다.</div>
+  </div>
+
+  <div id="lobby-screen" style="display:none;">
+    <div class="lobby-header">
+      <h2 id="lobbyTitleText">시뮬레이션 아카이브</h2>
+      <p id="lobbyDescText">탐구할 생태계 미션 케이스를 선택하세요.</p>
     </div>
-  </section>
+    <div class="case-scroll-area" id="caseGrid"></div>
+  </div>
+
+  <div id="game-screen" style="display:none;">
+    <div class="case-card">
+      <div class="img-wrapper">
+        <div class="case-overlay" id="caseNo">ECO-CASE</div>
+        <img id="caseImg" src="" class="case-img">
+      </div>
+      <div class="case-content">
+        <p class="case-desc" id="caseDesc"></p>
+        <div class="hint-bar">
+          <span style="font-size:0.6rem; color:var(--text-sub);">💡 생태계 균형 분석 가이드</span>
+          <button class="btn-hint" onclick="getStageHint()">원리 보기</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage-tracker">
+      <span id="stageTitleText">방어선: [1차]</span>
+      <div class="stage-dots" id="stageDotsContainer"></div>
+    </div>
+
+    <div class="eeg-monitor-card">
+      <canvas id="eegCanvas"></canvas>
+      <div style="text-align:right;">
+        <div class="bpm-value" id="bpmText">80 BPM</div>
+        <div style="font-size:0.48rem; color:var(--text-sub); font-weight:800;" id="stressStatus">STABLE</div>
+      </div>
+    </div>
+
+    <div class="chat-history" id="chatHistory"></div>
+
+    <div class="input-box-container">
+      <input type="text" class="text-input" id="userInput" placeholder="생태계 변동 요인 및 논리적 추궁 입력..." onkeydown="if(event.key==='Enter') sendQuestion()">
+      <button class="btn-send" onclick="sendQuestion()">분석</button>
+    </div>
+  </div>
+
 </div>
 
-<script>
-  function googleLogin() {
-    alert("구글 계정 로그인 창이 호출되었습니다. (연동 완료)");
-  }
+<div id="confession-modal">
+  <div class="confession-box">
+    <div class="confession-title">🌿 생태계 균형 분석 완료 🌿</div>
+    <div class="confession-dialogue" id="confessionText">
+      "시뮬레이션의 모든 변수와 인과관계가 명확히 규명되었습니다. 생태 리포트 작성이 완료되었습니다!"
+    </div>
+    <button class="btn-modal-close" onclick="completeCase()">결과 저장 후 홈으로</button>
+  </div>
+</div>
 
-  function startGame() {
-    alert("게임 플레이 화면으로 이동합니다!");
-  }
+<!-- Firebase SDK 및 초기화 스크립트 (CDN 방식) -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
 
-  function exploreMore() {
-    alert("프로젝트 소개 섹션으로 스크롤합니다.");
-  }
+  const firebaseConfig = {
+    apiKey: "AIzaSyBqzFs-U2JIckNvQHYDXJCuaz4yEuwlQpg",
+    authDomain: "sceince-education-game2.firebaseapp.com",
+    projectId: "sceince-education-game2",
+    storageBucket: "sceince-education-game2.firebasestorage.app",
+    messagingSenderId: "978807492671",
+    appId: "1:978807492671:web:8dd26b9fa1b5fbb2a5288a",
+    measurementId: "G-CRXKR21KW0"
+  };
+
+  // Firebase 초기화
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  console.log("Firebase & Analytics Initialized successfully!");
 </script>
 
+<script>
+  let audioCtx = null;
+  function initAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  function playSound() {
+    try {
+      initAudio();
+      let osc = audioCtx.createOscillator();
+      let gain = audioCtx.createGain();
+      osc.frequency.setValueAtTime(500, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.05);
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(); osc.stop(audioCtx.currentTime + 0.05);
+    } catch(e) {}
+  }
+
+  function googleLogin() {
+    playSound();
+    alert("✨ Google 계정 연동 및 로그인 완료!\n클라우드 세이브가 활성화되었습니다.");
+    document.getElementById('userHeaderBadge').innerText = "GOOGLE USER (SYNCED)";
+  }
+
+  function toggleFeatures() {
+    playSound();
+    const feat = document.getElementById('features-section');
+    if (feat.style.display === 'flex') {
+      feat.style.display = 'none';
+    } else {
+      feat.style.display = 'flex';
+    }
+  }
+
+  const normalCases = [];
+  for (let i = 1; i <= 10; i++) {
+    normalCases.push({
+      id: `ECO-CASE-${i}`,
+      title: `${i}. 생태계 균형 미션 케이스 #${i}`,
+      diff: i > 5 ? '고급 (LV.3)' : '기초 (LV.1)',
+      desc: `환경 요인과 개체 간의 먹이사슬 변화를 분석하여 생태계 불균형의 원인을 찾아내는 ${i}번째 시뮬레이션입니다.`,
+      img: `https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=400&auto=format&fit=crop`,
+      stages: [
+        { name: "1단계 (환경 요인 분석)", keyword: ["시간", "기록", "환경", "변화", "기후"], hint: "환경 변화와 개체 수 증감 간의 상관관계를 분석하세요.", initialMsg: "이 생태계의 변화는 단순한 계절적 변동일 뿐입니다." },
+        { name: "2단계 (먹이사슬 역학)", keyword: ["포식자", "먹이", "개체", "상호작용", "경쟁"], hint: "먹이사슬 상하위 개체 간의 불균형 요소를 지적하세요.", initialMsg: "포식자 개체 수는 항상 일정한 균형을 유지했습니다." },
+        { name: "3단계 (최종 원인 규명)", keyword: ["자백", "균형", "인정", "원인", "결과"], hint: "모든 데이터 모순을 입증하고 최종 결론을 도출하세요.", initialMsg: "더 이상은... 반박할 데이터가 없군요!" }
+      ]
+    });
+  }
+
+  let currentCase = null;
+  let currentStageIndex = 0;
+  let bpm = 80;
+  let eegColor = '#10b981';
+
+  const canvas = document.getElementById('eegCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = 130; canvas.height = 24;
+  let step = 0;
+
+  function drawWave() {
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.5)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = eegColor;
+
+    for (let x = 0; x < canvas.width; x += 4) {
+      let freq = bpm / 15;
+      let amp = (bpm - 60) / 2.2;
+      let y = 12 + Math.sin((x + step) * 0.05 * freq) * (Math.random() * amp);
+      if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke(); step += 2;
+    requestAnimationFrame(drawWave);
+  }
+  drawWave();
+
+  function showTitle() {
+    playSound();
+    document.getElementById('title-screen').style.display = 'flex';
+    document.getElementById('lobby-screen').style.display = 'none';
+    document.getElementById('game-screen').style.display = 'none';
+    document.getElementById('topNav').style.display = 'none';
+    document.getElementById('confession-modal').style.display = 'none';
+  }
+
+  function showLobby(mode) {
+    playSound();
+    document.getElementById('lobbyTitleText').innerText = mode === 'longform' ? "심층 생태 에피소드" : "시뮬레이션 아카이브";
+    document.getElementById('lobbyDescText').innerText = "탐구할 생태계 미션 케이스를 선택하세요.";
+
+    document.getElementById('title-screen').style.display = 'none';
+    document.getElementById('lobby-screen').style.display = 'flex';
+    document.getElementById('game-screen').style.display = 'none';
+    document.getElementById('topNav').style.display = 'flex';
+    renderLobby();
+  }
+
+  function renderLobby() {
+    const grid = document.getElementById('caseGrid');
+    grid.innerHTML = '';
+    normalCases.forEach(c => {
+      const card = document.createElement('div');
+      card.className = 'case-item-card';
+      card.onclick = () => { playSound(); startCase(c); };
+      card.innerHTML = `
+        <img src="${c.img}" class="case-thumb">
+        <div class="case-info">
+          <div class="case-title">${c.title}</div>
+          <div class="case-meta-row">
+            <span class="case-meta">3-STAGE SIMULATION</span>
+            <span class="case-diff">${c.diff}</span>
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function startCase(c) {
+    currentCase = c;
+    currentStageIndex = 0;
+    bpm = 80;
+    updateBPM(0);
+    updateStageUI();
+
+    document.getElementById('caseNo').innerText = c.id;
+    document.getElementById('caseImg').src = c.img;
+    document.getElementById('caseDesc').innerText = c.desc;
+    
+    const stage = c.stages[0];
+    document.getElementById('chatHistory').innerHTML = `
+      <div class="chat-item">
+        <div class="q-text">SYSTEM: 생태계 분석 개시 [${stage.name}]</div>
+        <div class="a-text"><b>(환경 변수 응답)</b> ${stage.initialMsg}</div>
+      </div>
+    `;
+
+    document.getElementById('lobby-screen').style.display = 'none';
+    document.getElementById('game-screen').style.display = 'flex';
+  }
+
+  function updateStageUI() {
+    const total = currentCase.stages.length;
+    document.getElementById('stageTitleText').innerText = `분석 단계: [${currentStageIndex + 1}/${total}]`;
+    
+    const container = document.getElementById('stageDotsContainer');
+    container.innerHTML = '';
+    for (let i = 0; i < total; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'dot';
+      if (i < currentStageIndex) dot.classList.add('cleared');
+      else if (i === currentStageIndex) dot.classList.add('active');
+      container.appendChild(dot);
+    }
+  }
+
+  function updateBPM(change) {
+    bpm = Math.min(150, Math.max(75, bpm + change));
+    const bpmEl = document.getElementById('bpmText');
+    const statusEl = document.getElementById('stressStatus');
+    bpmEl.innerText = `${bpm} BPM`;
+
+    if (bpm >= 120) {
+      eegColor = '#fb7185'; bpmEl.style.color = '#e11d48'; statusEl.innerText = 'VARIANCE HIGH';
+    } else if (bpm > 95) {
+      eegColor = '#facc15'; bpmEl.style.color = '#ca8a04'; statusEl.innerText = 'UNSTABLE';
+    } else {
+      eegColor = '#10b981'; bpmEl.style.color = '#059669'; statusEl.innerText = 'STABLE';
+    }
+  }
+
+  function getStageHint() {
+    playSound();
+    const stage = currentCase.stages[currentStageIndex];
+    alert(`💡 [생태 분석 가이드]\n${stage.hint}`);
+  }
+
+  function sendQuestion() {
+    const input = document.getElementById('userInput');
+    const query = input.value.trim();
+    if (!query) return;
+
+    playSound();
+    const history = document.getElementById('chatHistory');
+    const item = document.createElement('div');
+    item.className = 'chat-item';
+    item.innerHTML = `<div class="q-text">분석 입력: ${query}</div><div class="a-text"><b>[데이터 시뮬레이션 중...]</b></div>`;
+    history.appendChild(item);
+    history.scrollTop = history.scrollHeight;
+    input.value = '';
+
+    setTimeout(() => {
+      const stage = currentCase.stages[currentStageIndex];
+      const isCorrect = stage.keyword.some(kw => query.includes(kw));
+
+      if (isCorrect) {
+        updateBPM(20);
+        currentStageIndex++;
+
+        if (currentStageIndex >= currentCase.stages.length) {
+          item.querySelector('.a-text').innerHTML = `<b>(데이터 수렴)</b> 완벽한 논리로 생태계 불균형의 원인이 규명되었습니다!`;
+          setTimeout(() => {
+            document.getElementById('confession-modal').style.display = 'flex';
+          }, 600);
+        } else {
+          updateStageUI();
+          const next = currentCase.stages[currentStageIndex];
+          item.querySelector('.a-text').innerHTML = `<b>(변수 감지)</b> 입력하신 '<span style="color:var(--accent-green-dark);">${query}</span>' 요인이 지표에 반영됩니다.<br><b>(다음 분석)</b> ${next.initialMsg}`;
+        }
+      } else {
+        updateBPM(-5);
+        item.querySelector('.a-text').innerHTML = `<b>(무반응)</b> '<span style="color:var(--accent-green-dark);">${query}</span>'(은)는 현재 생태 지표와 연관성이 낮습니다.`;
+      }
+      history.scrollTop = history.scrollHeight;
+    }, 600);
+  }
+
+  function completeCase() {
+    playSound();
+    alert("🏆 [미션 저장 완료]\n생태계 분석 결과가 클라우드에 반영되었습니다.");
+    showTitle();
+  }
+</script>
 </body>
 </html>
