@@ -2,94 +2,804 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Science Education Game</title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>PROJECT : SHATTERED MIND</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+    :root {
+      --bg-dark: #050508;
+      --card-bg: rgba(12, 16, 28, 0.95);
+      --card-inner: #070a12;
+      --border-line: rgba(125, 211, 252, 0.2);
+      --accent-blue: #38bdf8;
+      --accent-red: #fb7185;
+      --accent-yellow: #facc15;
+      --accent-green: #4ade80;
+      --text-main: #f1f5f9;
+      --text-sub: #64748b;
     }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', sans-serif; -webkit-tap-highlight-color: transparent; }
 
     body {
-      font-family: Arial, sans-serif;
-      background: #f7f9fc;
-      color: #222;
+      background: var(--bg-dark); color: var(--text-main);
+      display: flex; justify-content: center; min-height: 100vh; overflow-x: hidden;
     }
 
-    header {
-      height: 70px;
-      background: white;
-      border-bottom: 1px solid #ddd;
+    .app-container {
+      width: 100%; max-width: 480px; 
+      background: linear-gradient(180deg, rgba(5,5,8,0.85) 0%, rgba(5,5,8,0.98) 85%, rgba(5,5,8,1) 100%),
+                  url('https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1000&auto=format&fit=crop') no-repeat center center fixed;
+      background-size: cover;
+      padding: 20px; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between;
+      position: relative; box-shadow: 0 0 50px rgba(0,0,0,0.9);
+      pointer-events: auto;
+    }
 
+    /* 확성기 클릭형 배너 스타일 */
+    .science-notice-banner {
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      font-size: 0.68rem;
+      color: #cbd5e1;
+      line-height: 1.4;
+      position: relative;
+      z-index: 20;
+      cursor: pointer;
+      transition: 0.1s;
+    }
+    .science-notice-banner:active { transform: scale(0.98); background: rgba(56,189,248,0.15); }
+    .science-notice-title {
+      color: var(--accent-blue);
+      font-weight: 800;
+      margin-bottom: 3px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-
-      padding: 0 8%;
+      gap: 4px;
     }
 
-    .logo {
-      font-size: 22px;
-      font-weight: bold;
+    .top-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-bottom: 12px; border-bottom: 1px solid var(--border-line); 
+      position: relative; z-index: 50; pointer-events: auto;
+    }
+    .btn-nav-action {
+      background: rgba(56, 189, 248, 0.1); border: 1px solid var(--border-line);
+      color: var(--accent-blue); padding: 10px 16px; border-radius: 8px;
+      font-size: 0.8rem; font-weight: 800; cursor: pointer; pointer-events: auto; z-index: 51;
     }
 
-    nav a {
-      text-decoration: none;
-      color: #222;
-      margin-left: 30px;
+    /* 게임 홈페이지 스타일 랜딩 섹션 */
+    #title-screen {
+      display: flex; flex-direction: column; justify-content: center;
+      flex: 1; gap: 14px; padding: 10px 0; position: relative; z-index: 20; pointer-events: auto;
     }
 
-    .hero {
-      height: calc(100vh - 70px);
-
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-
+    .landing-hero {
+      background: rgba(12, 16, 28, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 16px;
+      padding: 22px 18px;
       text-align: center;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    .landing-hero::before {
+      content: '';
+      position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent-blue), transparent);
+    }
+    .main-top-tag { font-size: 0.65rem; color: var(--accent-blue); font-weight: 800; letter-spacing: 3px; margin-bottom: 6px; }
+    .main-title { font-size: 1.8rem; font-weight: 900; color: #fff; letter-spacing: -0.5px; margin-bottom: 4px; text-transform: uppercase; text-shadow: 0 0 10px rgba(56,189,248,0.4); }
+    .main-subtitle { font-size: 0.78rem; color: var(--accent-yellow); font-weight: 700; margin-bottom: 10px; }
+    .main-desc { font-size: 0.72rem; color: #94a3b8; line-height: 1.45; }
+
+    .menu-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; position: relative; z-index: 30; }
+    .menu-item {
+      font-size: 0.95rem; font-weight: 800; color: #e2e8f0; cursor: pointer;
+      display: flex; align-items: baseline; justify-content: space-between; background: rgba(12, 16, 28, 0.9);
+      padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border-line);
+      pointer-events: auto; position: relative; z-index: 31; transition: 0.1s;
+    }
+    .menu-item span { font-size: 0.62rem; color: var(--text-sub); font-weight: 600; letter-spacing: 1px; }
+    .menu-item.special { border-color: rgba(250, 204, 21, 0.4); background: rgba(250, 204, 21, 0.05); color: var(--accent-yellow); }
+    .menu-item:active { transform: scale(0.98); background: rgba(56,189,248,0.1); }
+
+    /* 홈페이지형 구글 로그인 박스 */
+    .google-login-box {
+      background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-line);
+      border-radius: 12px; padding: 12px; display: flex; align-items: center; justify-content: center; gap: 10px;
+      font-size: 0.8rem; font-weight: 800; color: #fff; cursor: pointer; margin-bottom: 8px;
+      position: relative; z-index: 30; pointer-events: auto; transition: 0.2s;
+    }
+    .google-login-box:hover { background: rgba(255, 255, 255, 0.08); border-color: var(--accent-blue); }
+    .google-login-box:active { transform: scale(0.98); }
+
+    .footer-links {
+      font-size: 0.58rem; color: var(--text-sub); line-height: 1.3; display: flex; flex-direction: column; gap: 3px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 8px; position: relative; z-index: 20;
+    }
+    .footer-nav { display: flex; gap: 10px; font-weight: 700; color: #94a3b8; }
+    .footer-nav span { cursor: pointer; pointer-events: auto; }
+    .footer-nav span:hover { color: var(--accent-blue); }
+
+    #lobby-screen { display: none; flex-direction: column; gap: 10px; flex: 1; position: relative; z-index: 20; pointer-events: auto; }
+    .lobby-header h2 { font-size: 1.1rem; font-weight: 900; color: #fff; }
+    .lobby-header p { font-size: 0.7rem; color: var(--text-sub); }
+    
+    .case-scroll-area {
+      flex: 1; max-height: 70vh; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 4px;
+      pointer-events: auto;
+    }
+    .case-scroll-area::-webkit-scrollbar { width: 5px; }
+    .case-scroll-area::-webkit-scrollbar-thumb { background: rgba(56,189,248,0.25); border-radius: 4px; }
+
+    .case-item-card {
+      background: var(--card-bg); border: 1px solid var(--border-line);
+      border-radius: 12px; padding: 12px; cursor: pointer;
+      display: flex; gap: 12px; align-items: center; backdrop-filter: blur(6px);
+      pointer-events: auto; position: relative; z-index: 25;
+    }
+    .case-item-card:active { border-color: var(--accent-blue); background: rgba(56,189,248,0.05); }
+    .case-thumb { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border-line); background: #111; }
+    .case-info { flex: 1; }
+    .case-title { font-size: 0.82rem; font-weight: 800; color: #fff; margin-bottom: 4px; }
+    .case-meta-row { display: flex; justify-content: space-between; align-items: center; }
+    .case-meta { font-size: 0.62rem; color: var(--accent-yellow); font-weight: 700; }
+    .case-diff { font-size: 0.55rem; padding: 2px 6px; border-radius: 4px; font-weight: 800; }
+    .diff-1 { background: rgba(74, 222, 128, 0.15); color: var(--accent-green); }
+    .diff-2 { background: rgba(56, 189, 248, 0.15); color: var(--accent-blue); }
+    .diff-3 { background: rgba(250, 204, 21, 0.15); color: var(--accent-yellow); }
+    .diff-4 { background: rgba(249, 115, 22, 0.15); color: #fb923c; }
+    .diff-5 { background: rgba(251, 113, 133, 0.15); color: var(--accent-red); }
+
+    #game-screen { display: none; flex-direction: column; gap: 10px; flex: 1; position: relative; z-index: 20; pointer-events: auto; }
+
+    .case-card {
+      background: var(--card-bg); border: 1px solid var(--border-line);
+      border-radius: 12px; overflow: hidden; backdrop-filter: blur(6px);
+    }
+    .img-wrapper { width: 100%; height: 105px; position: relative; background: #000; }
+    .case-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
+    .case-overlay {
+      position: absolute; top: 8px; left: 8px;
+      background: rgba(7,10,18,0.9); border: 1px solid var(--border-line);
+      padding: 4px 8px; border-radius: 4px; font-size: 0.58rem; color: var(--accent-blue); font-weight: 900;
     }
 
-    .hero h1 {
-      font-size: 50px;
-      margin-bottom: 15px;
+    .case-content { padding: 10px; }
+    .case-desc { font-size: 0.72rem; line-height: 1.4; color: #cbd5e1; margin-bottom: 6px; }
+    
+    .hint-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--card-inner); padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border-line);
+    }
+    .btn-hint {
+      background: rgba(250, 204, 21, 0.15); border: 1px solid rgba(250, 204, 21, 0.3);
+      color: var(--accent-yellow); font-size: 0.65rem; font-weight: 800; padding: 5px 10px; border-radius: 6px; cursor: pointer;
+      pointer-events: auto; z-index: 25;
     }
 
-    .hero p {
-      font-size: 18px;
-      color: #666;
+    .stage-tracker {
+      background: var(--card-bg); border: 1px solid var(--border-line);
+      border-radius: 10px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.7rem; font-weight: 800; backdrop-filter: blur(6px);
+    }
+    .stage-dots { display: flex; gap: 6px; }
+    .dot { width: 9px; height: 9px; border-radius: 50%; background: #1e293b; border: 1px solid var(--border-line); }
+    .dot.active { background: var(--accent-blue); box-shadow: 0 0 8px var(--accent-blue); }
+    .dot.cleared { background: var(--accent-green); }
+
+    .eeg-monitor-card {
+      background: var(--card-bg); border: 1px solid var(--border-line);
+      border-radius: 10px; padding: 8px 12px; display: flex; align-items: center; justify-content: space-between;
+      backdrop-filter: blur(6px);
+    }
+    .bpm-value { font-size: 1.15rem; font-weight: 900; color: var(--accent-green); }
+    canvas#eegCanvas { width: 150px; height: 30px; background: #000; border-radius: 4px; border: 1px solid var(--border-line); }
+
+    .chat-history {
+      flex: 1; background: var(--card-bg); border: 1px solid var(--border-line);
+      border-radius: 12px; padding: 10px; min-height: 90px; max-height: 130px;
+      overflow-y: auto; display: flex; flex-direction: column; gap: 6px; backdrop-filter: blur(6px);
+    }
+    .chat-history::-webkit-scrollbar { width: 5px; }
+    .chat-history::-webkit-scrollbar-thumb { background: rgba(56,189,248,0.3); border-radius: 4px; }
+
+    .chat-item { font-size: 0.72rem; line-height: 1.4; }
+    .q-text { color: var(--accent-blue); font-weight: 700; }
+    .a-text { color: #f1f5f9; background: rgba(7,10,18,0.7); padding: 6px 8px; border-radius: 6px; border: 1px solid var(--border-line); margin-top: 3px; }
+
+    #settings-modal, #confession-modal {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(5, 5, 8, 0.95); z-index: 999;
+      flex-direction: column; justify-content: center; align-items: center; padding: 24px; text-align: center;
+      pointer-events: auto;
+    }
+    .modal-box {
+      background: #0c101c; border: 1px solid var(--border-line); border-radius: 16px;
+      padding: 20px; width: 100%; max-width: 380px; box-shadow: 0 0 30px rgba(0,0,0,0.8);
+      display: flex; flex-direction: column; gap: 12px; text-align: left;
+      pointer-events: auto;
+    }
+    .modal-title { color: #fff; font-size: 0.95rem; font-weight: 900; border-bottom: 1px solid var(--border-line); padding-bottom: 8px; }
+    .setting-group { display: flex; flex-direction: column; gap: 5px; font-size: 0.72rem; color: #94a3b8; }
+    .setting-group label { display: flex; justify-content: space-between; font-weight: 700; color: #e2e8f0; }
+    .setting-group input[type="range"] { accent-color: var(--accent-blue); width: 100%; cursor: pointer; pointer-events: auto; }
+    .setting-group select { background: #070a12; color: #fff; border: 1px solid var(--border-line); padding: 6px; border-radius: 6px; outline: none; pointer-events: auto; }
+    
+    .btn-modal-close {
+      background: var(--accent-blue); border: none; color: #050508; padding: 12px; border-radius: 8px;
+      font-weight: 900; font-size: 0.8rem; cursor: pointer; text-align: center; margin-top: 4px;
+      pointer-events: auto; z-index: 1000;
+    }
+
+    .confession-box {
+      background: #0c101c; border: 2px solid var(--accent-red); border-radius: 16px;
+      padding: 18px; width: 100%; max-width: 380px; box-shadow: 0 0 30px rgba(251, 113, 133, 0.3);
+      display: flex; flex-direction: column; gap: 10px; text-align: center;
+      pointer-events: auto; max-height: 90vh; overflow-y: auto;
+    }
+    .confession-title { color: var(--accent-red); font-size: 1rem; font-weight: 900; }
+    .confession-dialogue { font-size: 0.74rem; line-height: 1.4; color: #e2e8f0; background: #070a12; padding: 8px; border-radius: 8px; border: 1px solid var(--border-line); text-align: left; }
+    
+    .science-fact-box {
+      font-size: 0.68rem; line-height: 1.4; color: #93c5fd; background: rgba(56, 189, 248, 0.08); padding: 8px; border-radius: 8px; border: 1px solid rgba(56, 189, 248, 0.2); text-align: left;
+    }
+    .science-fact-box b { color: #38bdf8; }
+
+    .input-box-container {
+      background: var(--card-bg); border: 1px solid var(--border-line);
+      border-radius: 12px; padding: 6px; display: flex; gap: 6px; backdrop-filter: blur(6px);
+      pointer-events: auto; position: relative; z-index: 25;
+    }
+    .text-input {
+      flex: 1; background: var(--card-inner); border: 1px solid var(--border-line);
+      border-radius: 8px; padding: 10px 12px; color: #fff; font-size: 0.8rem; outline: none;
+      pointer-events: auto;
+    }
+    .btn-send {
+      background: var(--accent-blue); border: none; color: #050508;
+      padding: 0 18px; border-radius: 8px; font-weight: 900; font-size: 0.8rem; cursor: pointer;
+      pointer-events: auto; z-index: 26;
     }
   </style>
 </head>
-
 <body>
 
-<header>
+<div class="app-container">
 
-  <div class="logo">
-    SCIENCE GAME
+  <div class="top-nav" id="topNav" style="display:none;">
+    <button class="btn-nav-action" onclick="handleNavClick()">◀ 메인 화면</button>
+    <div style="font-size:0.62rem; color:var(--accent-blue); font-weight:800;" id="userHeaderBadge">PROFILER UNIT</div>
   </div>
 
-  <nav>
-    <a href="#">HOME</a>
-  </nav>
+  <!-- 게임 홈페이지 스타일 랜딩 메인 화면 -->
+  <div id="title-screen">
+    <div class="landing-hero">
+      <div class="main-top-tag">OFFICIAL GAME LAUNCH</div>
+      <div class="main-title">SHATTERED MIND</div>
+      <div class="main-subtitle">연쇄 심리 붕괴 프로파일링 시스템</div>
+      <div class="main-desc">용의자의 심리 방어선을 해체하고 은폐된 진실의 조각을 강제 추출하는 하이퍼 인지 프로파일링 게임입니다.</div>
+    </div>
 
-</header>
+    <!-- 📢 클릭할 때마다 바뀌는 확성기 브리핑 배너 -->
+    <div class="science-notice-banner" onclick="rotateScienceFact()">
+      <div class="science-notice-title" id="bannerTitle">📢 브리핑 #1 (클릭하여 다음 정보 보기)</div>
+      <div id="bannerContent">거짓말이나 스트레스를 겪으면 뇌의 변연계(편도체)가 위협을 감지해 교감신경을 활성화하며, 아드레날린이 분비되어 심박수가 급격히 상승합니다.</div>
+    </div>
 
+    <div class="menu-list">
+      <div class="menu-item" onclick="handleMenuClick('normal')">
+        새로운 수사 개시 <span>NEW INVESTIGATION</span>
+      </div>
+      <div class="menu-item special" onclick="handleMenuClick('longform')">
+        스페셜 파일 : 심층 대서사시 <span>DEEP INVESTIGATION</span>
+      </div>
+      <div class="menu-item" onclick="handleSettingsClick()">
+        환경 설정 <span>SYSTEM SETTINGS</span>
+      </div>
+    </div>
 
-<section class="hero">
+    <div>
+      <!-- 홈페이지형 구글 로그인 버튼 -->
+      <div class="google-login-box" onclick="handleLoginClick()">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.19v3.15C3.17 21.37 7.23 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.19C.43 8.1 0 9.8 0 12s.43 3.9 1.19 5.42l4.09-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.23 0 3.17 2.63 1.19 6.58l4.09 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
+        Google 계정으로 간편 로그인 / 세이브 연동
+      </div>
 
-  <h1>Science Education Game</h1>
+      <div class="footer-links">
+        <div>© 2026 SHATTERED MIND STUDIO. All rights reserved.</div>
+        <div class="footer-nav">
+          <span onclick="alert('개인정보처리방침: 프로파일링 기록은 암호화되어 안전하게 보호됩니다.')">개인정보처리방침</span>
+          <span onclick="alert('이용약관: 시뮬레이션 외 부적절한 심문 행위를 금합니다.')">이용약관</span>
+          <span onclick="alert('고객지원: support@shatteredmind.io')">고객지원</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <p>
-    과학을 게임으로 배우는 교육 프로젝트
-  </p>
+  <!-- 로비 화면 -->
+  <div id="lobby-screen" style="display:none;">
+    <div class="lobby-header">
+      <h2 id="lobbyTitleText">사건 아카이브</h2>
+      <p id="lobbyDescText">용의자 프로파일링 목록입니다.</p>
+    </div>
+    <div class="case-scroll-area" id="caseGrid"></div>
+  </div>
 
-</section>
+  <!-- 인게임 화면 -->
+  <div id="game-screen">
+    <div class="case-card">
+      <div class="img-wrapper">
+        <div class="case-overlay" id="caseNo">CASE</div>
+        <img id="caseImg" src="" class="case-img">
+      </div>
+      <div class="case-content">
+        <p class="case-desc" id="caseDesc"></p>
+        <div class="hint-bar">
+          <span style="font-size:0.65rem; color:var(--text-sub);">💡 프로파일링 추론 힌트</span>
+          <button class="btn-hint" onclick="handleHintClick()">방어선 분석 보기</button>
+        </div>
+      </div>
+    </div>
 
+    <div class="stage-tracker">
+      <span id="stageTitleText">방어선: [1차]</span>
+      <div class="stage-dots" id="stageDotsContainer"></div>
+    </div>
 
+    <div class="eeg-monitor-card">
+      <canvas id="eegCanvas"></canvas>
+      <div style="text-align:right;">
+        <div class="bpm-value" id="bpmText">80 BPM</div>
+        <div style="font-size:0.52rem; color:var(--text-sub); font-weight:800;" id="stressStatus">STABLE</div>
+      </div>
+    </div>
+
+    <div class="chat-history" id="chatHistory"></div>
+
+    <div class="input-box-container">
+      <input type="text" class="text-input" id="userInput" placeholder="용의자 진술의 허점을 파고드는 논리 추궁..." onkeydown="if(event.key==='Enter') sendQuestion()">
+      <button class="btn-send" onclick="sendQuestion()">압박</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- 설정 모달 -->
+<div id="settings-modal">
+  <div class="modal-box">
+    <div class="modal-title">⚙️ 시스템 환경 설정</div>
+    <div class="setting-group">
+      <label>효과음 (SFX) 음량 <span id="volVal" style="color:var(--accent-blue);">80%</span></label>
+      <input type="range" min="0" max="100" value="80" oninput="document.getElementById('volVal').innerText = this.value + '%'">
+    </div>
+    <div class="setting-group">
+      <label>심박수(EEG) 반응 속도</label>
+      <select>
+        <option>고속 실시간 (High)</option>
+        <option selected>표준 균형 (Standard)</option>
+      </select>
+    </div>
+    <button class="btn-modal-close" onclick="closeSettings()">설정 저장 및 닫기</button>
+  </div>
+</div>
+
+<!-- 자백 및 브리핑 모달 -->
+<div id="confession-modal">
+  <div class="confession-box">
+    <div class="confession-title">🚨 심리 방어선 붕괴 & 자백 🚨</div>
+    <div class="confession-dialogue" id="confessionText">
+      "더 이상 숨길 수 없군요... 내 알리바이를 이렇게까지 철저하게 해부할 줄이야... 인정합니다!"
+    </div>
+    <div class="science-fact-box" id="endingScienceFactBox">
+      <b>🔬 현실 세계의 응용:</b><br>
+      법과학 및 국토안보 수사 현장에서는 비접촉식 광전용적맥파(PPG) 센서와 폴리그래프를 활용해 용의자의 미세한 생체 신호 변화를 측정합니다.
+    </div>
+    <button class="btn-modal-close" onclick="completeCase()">조서 작성 완료 및 메인으로</button>
+  </div>
+</div>
+
+<script>
+  let audioCtx = null;
+  function initAudio() {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+  }
+
+  function playClickSound() {
+    try {
+      initAudio();
+      let osc = audioCtx.createOscillator();
+      let gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.05);
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.05);
+    } catch(e) {}
+  }
+
+  function playHeartbeatSound() {
+    try {
+      initAudio();
+      let osc = audioCtx.createOscillator();
+      let gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(120, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.12);
+      gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.12);
+    } catch(e) {}
+  }
+
+  // 확성기 클릭 시 순환할 브리핑 팩트 리스트
+  const scienceFacts = [
+    {
+      title: "📢 브리핑 #1 (자율신경계와 심박수)",
+      content: "거짓말이나 스트레스를 겪으면 뇌의 변연계(편도체)가 위협을 감지해 교감신경을 활성화하며, 아드레날린이 분비되어 심박수가 급격히 상승합니다."
+    },
+    {
+      title: "📢 브리핑 #2 (전두엽과 거짓말 억제)",
+      content: "사람이 진실을 숨기고 거짓말을 지어낼 때는 뇌의 전두엽(특히 배외측 전두전야)이 평소보다 훨씬 더 과활성화되어 인지적 부하가 증가합니다."
+    },
+    {
+      title: "📢 브리핑 #3 (피부 전기 반사, GSR)",
+      content: "긴장하거나 심리적 압박을 받으면 교감신경의 지배를 받는 땀샘이 활성화되어 피부의 전기 전도도(GSR)가 미세하게 변화합니다."
+    },
+    {
+      title: "📢 브리핑 #4 (심박변이도, HRV 분석)",
+      content: "건강한 심장은 박동 간격이 미세하게 불규칙(HRV)하지만, 극심한 스트레스나 불안을 느끼면 자율신경 균형이 깨지면서 패턴이 경직됩니다."
+    }
+  ];
+  let currentFactIndex = 0;
+
+  function rotateScienceFact() {
+    playClickSound();
+    currentFactIndex = (currentFactIndex + 1) % scienceFacts.length;
+    document.getElementById('bannerTitle').innerText = scienceFacts[currentFactIndex].title + " (클릭하여 다음 정보 보기)";
+    document.getElementById('bannerContent').innerText = scienceFacts[currentFactIndex].content;
+  }
+
+  const endingScienceFacts = [
+    "<b>🔬 현실 세계의 뇌과학/심박수 응용 (법과학):</b> 법과학 수사 현장에서는 비접촉식 생체신호 분석(PPG)과 폴리그래프를 통해 용의자의 미세한 자율신경 반응 및 거짓말 지표를 측정합니다.",
+    "<b>🔬 현실 세계의 뇌과학 응용 (인지부하 측정):</b> 현대 인지과학 연구에서는 fMRI나 안구 운동 추적 기술을 통해 거짓말을 할 때 작동하는 전두엽의 과활성화 상태를 분석하여 범죄 수사에 보조적으로 활용합니다.",
+    "<b>🔬 현실 세계의 생체신호 응용 (스마트헬스케어):</b> 스마트워치와 웨어러블 기기는 심박변이도(HRV) 데이터를 실시간 분석하여 일상 속 스트레스 지수, 불안도, 공황 발작 전조증상을 모니터링하는 디지털 치료기기(DTx) 기술에 적용되고 있습니다."
+  ];
+
+  const normalCases = [];
+  const longformCases = [];
+  const crimeTitles = [
+    "맨해튼 펜트하우스 밀실 살인사건", "브루클린 브리지 가스 테러", "월스트리트 기밀 유출 사건",
+    "미드나잇 지하철 실종사건", "블루 다이아몬드 도난 진실", "센트럴 파크 독살 미스터리",
+    "소호 미술관 위조화 가짜 소동", "타임스퀘어 전광판 해킹 테러", "퀸즈 호숫가 백골 살인사건",
+    "할렘 클럽 마약 거래 스캔들", "브로드웨이 극장 백스테이지 비극", "첼시 아트 디렉터 추락사",
+    "이스트리버 화물선 밀반입 사건", "그리니치 빌리지 저택 방화", "업타운 명품관 인질극",
+    "다운타운 다국적 은행 금고 털이", "루스벨트 아일랜드 트램 정전", "차이나타운 은밀한 밀거래",
+    "리버사이드 드라이브 폭발물", "소호 패션위크 모델 연쇄 실종", "파이낸셜 디스트릭트 내부자 거래",
+    "브루클린 항만 컨테이너 밀항", "맨해튼 대학 로스쿨 교수 피살", "타임스퀘어 호텔 지배인 암살",
+    "첼시 야시장 독극물 살인", "그린포인트 폐창고 인신매매", "웨스트사이드 고속도로 위장 사고",
+    "이스트빌리지 언더그라운드 비밀", "허드슨 강 밀물 속 시신 유기", "메트로폴리스 최종 심판"
+  ];
+
+  const imageIds = [
+    "1508739773434-c26b3d09e071", "1518709268805-4e9042af9f23", "1526374965328-7f61d4dc18c5",
+    "1514525253161-7a46d19cd819", "1509198397868-475647b2a1e5", "1534447677768-be436bb09401",
+    "1579783900882-c0d3dad7b119", "1550751827-4bd374c3f58b", "1518770660439-4636190af475",
+    "1507679799987-c73779587ccf", "1469474968028-56623f02e42e", "1512917774080-9991f1c4c750",
+    "1451187580459-43490279c0fa", "1563089145-599997674d42", "1523961131990-5ea7c61b2107",
+    "1526738549149-8e07eca6c147", "1541872703-74c5e44368f9", "1506744038136-46273834b3fb",
+    "1519681393784-d120267933ba", "1492684223066-81342ee5ff30", "1477959858617-67f30bc7ff91",
+    "1501785888041-af3ef285b470", "1446776811953-b23d57bd21aa", "1533105079780-92b9be482077",
+    "1486406146926-c627a92ad1ab", "1517841905240-472988babdf9", "1521737604893-d14cc237f11d",
+    "1504384308090-c894fdcc538d", "1470071459604-3b5ec3a7fe05", "1519501025264-65ba15a82390"
+  ];
+
+  for (let i = 1; i <= 30; i++) {
+    let diffLv = Math.ceil(i / 6);
+    let diffName = diffLv === 1 ? '쉬움 (LV.1)' : diffLv === 2 ? '보통 (LV.2)' : diffLv === 3 ? '어려움 (LV.3)' : diffLv === 4 ? '매우 어려움 (LV.4)' : '최종보스 (LV.5)';
+    let stages = [
+      { name: "1차 방어선 (알리바이 모순)", keyword: ["시간", "목격", "CCTV", "기록", "동선"], hint: "범행 시각과 주변 기록 간의 시차 모순을 타격하세요.", initialMsg: "저는 사건 시각에 알리바이가 완벽합니다. 기록을 확인해 보세요." },
+      { name: "2차 방어선 (물증 및 지문)", keyword: ["지문", "흔적", "장갑", "유리", "머리카락", "혈흔"], hint: "현장 증거와 용의자의 신체 흔적 불일치를 지적하세요.", initialMsg: "현장에 제 흔적이 남았을 리가 없습니다. 억지 부리지 마십시오." },
+      { name: "3차 방어선 (범행 동기)", keyword: ["돈", "빚", "원수", "복수", "유산", "보험금", "협박"], hint: "금전적 압박이나 숨겨진 원한 관계의 허점을 찌르세요.", initialMsg: "피해자와는 아무런 금전적 원한이나 문제도 없었습니다." },
+      { name: "4차 방어선 (밀실 트릭)", keyword: ["도구", "열쇠", "창문", "자동", "트릭", "시간차", "줄"], hint: "외부 침입이 불가능한 구조를 뚫어낸 물리적 방식을 추궁하세요.", initialMsg: "철저한 밀실이었습니다. 제가 어떻게 그곳에 접근합니까?" },
+      { name: "5차 방어선 (공범 및 은닉)", keyword: ["공범", "연락", "은닉", "창고", "조력자", "입막음", "전화"], hint: "통신기록이나 증거 은닉 장소의 연결 고리를 밝혀내세요.", initialMsg: "모든 건 저 혼자 내린 결정입니다. 배후는 없습니다." },
+      { name: "6차 방어선 (결정적 자백)", keyword: ["자백", "진실", "결정적", "마지막", "인정", "거짓"], hint: "모든 논리가 봉쇄된 용의자에게 결정적인 한 방을 가하세요.", initialMsg: "더 이상은... 반박할 논리가 없군요. 하지만 쉽게 인정하진 않겠소!" }
+    ];
+    normalCases.push({
+      id: `FILE-${400 + i}`,
+      title: `${i}. ${crimeTitles[i-1]}`,
+      diff: diffLv,
+      diffName: diffName,
+      desc: `[${diffName}] 6단계 심리 추론 케이스. 철저한 논리적 모순을 분석하여 방어선을 무너뜨리세요.`,
+      img: `https://images.unsplash.com/photo-${imageIds[(i-1) % imageIds.length]}?q=80&w=400&auto=format&fit=crop`,
+      stages: stages
+    });
+  }
+
+  const longformTitles = [
+    "시즌1 스페셜 : 링컨 터널 연쇄 폭파 음모",
+    "시즌1 스페셜 : 페더럴 리저브 금고 내부자들",
+    "시즌1 스페셜 : 실리콘밸리 AI 창업자 암살 미스터리",
+    "시즌1 스페셜 : 국무부 최고 기밀 누출과 배신자",
+    "시즌1 파이널 : 프로젝트 섀터드 마인드 기원"
+  ];
+
+  for (let i = 1; i <= 5; i++) {
+    let longStages = [
+      { name: "1단계 (초기 진술 해체)", keyword: ["알리바이", "출입", "로그", "시간"], hint: "초기 진술에 포함된 거대한 타임라인의 허점을 파고드세요.", initialMsg: "이 사건과 저는 아무런 연관이 없습니다. 조사는 이쯤 하시죠." },
+      { name: "2단계 (통신 기록 대조)", keyword: ["문자", "전화", "통화", "발신"], hint: "사건 당일 밤 주고받은 비밀 연락책의 기록을 겨누세요.", initialMsg: "사적인 연락일 뿐이며, 업무와는 무관한 내용입니다." },
+      { name: "3단계 (은닉 자금 추적)", keyword: ["계좌", "송금", "자금", "페이퍼", "달러"], hint: "역외 계좌로 흘러들어간 거액의 자금 흐름을 지적하세요.", initialMsg: "정당한 투자 수익일 뿐, 부정한 돈이 아닙니다." },
+      { name: "4단계 (현장 미세 증거)", keyword: ["DNA", "섬유", "머리카락", "흔적"], hint: "범행 현장 깊숙한 곳에서 발견된 결정적 미세 증거를 대세요.", initialMsg: "제 동선에 누군가 고의로 가져다 놓은 게 분명합니다." },
+      { name: "5단계 (공범 관계 폭로)", keyword: ["공범", "부하", "동료", "증언", "배후"], hint: "이미 체포된 공범이 불어닥친 증언의 진위여부를 압박하세요.", initialMsg: "그 자가 살기 위해 저에게 거짓을 뒤집어씌우고 있군요!" },
+      { name: "6단계 (방어선 완전 붕괴)", keyword: ["모순", "붕괴", "증명", "함정"], hint: "더 이상 빠져나갈 구멍이 없는 완벽한 논리적 봉쇄망을 펼치세요.", initialMsg: "크윽... 이 정도까지 모든 증거를 엮어낼 줄이야..." },
+      { name: "7단계 (숨겨진 동기)", keyword: ["복수", "원한", "과거", "진실", "이유"], hint: "이 거대한 음모를 꾸미게 된 근본적인 과거의 원한을 찌르세요.", initialMsg: "당신들이 그 시절 우리 가족에게 저지른 짓을 생각하면..." },
+      { name: "8단계 (최종 자백)", keyword: ["자백", "항복", "인정", "모든것"], hint: "심박수 폭발 직전의 용의자에게 마지막 최후통첩을 날리세요.", initialMsg: "알겠습니다... 제가 모든 음모의 설계자입니다. 조서를 쓰세요!" }
+    ];
+    longformCases.push({
+      id: `SPECIAL-${i}`,
+      title: longformTitles[i-1],
+      diff: 5,
+      diffName: '심층 대서사시 (EXTENDED)',
+      desc: `[DEEP INVESTIGATION] 8단계의 거대한 심층 방어선과 멀티 페이즈 추궁이 몰아치는 대작 에피소드.`,
+      img: `https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=400&auto=format&fit=crop`,
+      stages: longStages
+    });
+  }
+
+  let activeDatabase = normalCases;
+  let currentCase = null;
+  let currentStageIndex = 0;
+  let bpm = 80;
+  let eegColor = '#4ade80';
+
+  const canvas = document.getElementById('eegCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = 150; canvas.height = 30;
+  let step = 0;
+
+  function drawWave() {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+    ctx.lineWidth = 2;
+    strokeStyle = eegColor;
+    ctx.strokeStyle = eegColor;
+
+    for (let x = 0; x < canvas.width; x += 4) {
+      let freq = bpm / 15;
+      let amp = (bpm - 60) / 2.2;
+      let y = 15 + Math.sin((x + step) * 0.05 * freq) * (Math.random() * amp);
+      if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke(); step += 2;
+    requestAnimationFrame(drawWave);
+  }
+  drawWave();
+
+  function handleNavClick() {
+    playClickSound();
+    showTitle();
+  }
+
+  function handleMenuClick(mode) {
+    playClickSound();
+    showLobby(mode);
+  }
+
+  function handleSettingsClick() {
+    playClickSound();
+    openSettings();
+  }
+
+  function handleLoginClick() {
+    playClickSound();
+    loginWithGoogle();
+  }
+
+  function handleHintClick() {
+    playClickSound();
+    getStageHint();
+  }
+
+  function loginWithGoogle() {
+    alert("✨ 구글 클라우드 계정 연동 및 로그인 완료!\n프로필 및 클라우드 세이브가 활성화되었습니다.");
+    document.getElementById('userHeaderBadge').innerText = "AGENT (GOOGLE SYNC)";
+  }
+
+  function openSettings() {
+    document.getElementById('settings-modal').style.display = 'flex';
+  }
+  function closeSettings() {
+    playClickSound();
+    document.getElementById('settings-modal').style.display = 'none';
+  }
+
+  function showTitle() {
+    document.getElementById('title-screen').style.display = 'flex';
+    document.getElementById('lobby-screen').style.display = 'none';
+    document.getElementById('game-screen').style.display = 'none';
+    document.getElementById('topNav').style.display = 'none';
+    document.getElementById('confession-modal').style.display = 'none';
+    document.getElementById('settings-modal').style.display = 'none';
+  }
+
+  function showLobby(mode) {
+    if (mode === 'longform') {
+      activeDatabase = longformCases;
+      document.getElementById('lobbyTitleText').innerText = "스페셜 파일 : 심층 대서사시";
+      document.getElementById('lobbyDescText').innerText = "8단계 방어선으로 구성된 몰입형 롱폼 수사 아카이브입니다.";
+    } else {
+      activeDatabase = normalCases;
+      document.getElementById('lobbyTitleText').innerText = "사건 아카이브 (30 CASES)";
+      document.getElementById('lobbyDescText').innerText = "6단계 추론 방어선으로 구성된 용의자 프로파일링 목록입니다.";
+    }
+
+    document.getElementById('title-screen').style.display = 'none';
+    document.getElementById('lobby-screen').style.display = 'flex';
+    document.getElementById('game-screen').style.display = 'none';
+    document.getElementById('topNav').style.display = 'flex';
+    renderLobby();
+  }
+
+  function renderLobby() {
+    const grid = document.getElementById('caseGrid');
+    grid.innerHTML = '';
+    activeDatabase.forEach(c => {
+      const card = document.createElement('div');
+      card.className = 'case-item-card';
+      card.onclick = () => { 
+        playClickSound(); 
+        startCase(c, 0, 80); 
+      };
+      card.innerHTML = `
+        <img src="${c.img}" class="case-thumb" onerror="this.src='https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=200&auto=format&fit=crop'">
+        <div class="case-info">
+          <div class="case-title">${c.title}</div>
+          <div class="case-meta-row">
+            <span class="case-meta">${c.stages.length}-STAGE PROFILING</span>
+            <span class="case-diff diff-${c.diff > 5 ? 5 : c.diff}">${c.diffName}</span>
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function startCase(c, startStage = 0, startBpm = 80) {
+    currentCase = c;
+    currentStageIndex = startStage;
+    bpm = startBpm;
+    updateBPM(0);
+    updateStageUI();
+
+    document.getElementById('caseNo').innerText = c.id;
+    document.getElementById('caseImg').src = c.img;
+    document.getElementById('caseDesc').innerText = c.desc;
+    
+    const stage = c.stages[currentStageIndex];
+    document.getElementById('chatHistory').innerHTML = `
+      <div class="chat-item">
+        <div class="q-text">SYSTEM: 심리 프로파일링 개시 [${stage.name}]</div>
+        <div class="a-text"><b>(경계하며)</b> ${stage.initialMsg}</div>
+      </div>
+    `;
+
+    document.getElementById('title-screen').style.display = 'none';
+    document.getElementById('lobby-screen').style.display = 'none';
+    document.getElementById('game-screen').style.display = 'flex';
+    document.getElementById('topNav').style.display = 'flex';
+  }
+
+  function updateStageUI() {
+    const totalStages = currentCase.stages.length;
+    document.getElementById('stageTitleText').innerText = `방어선: [${currentStageIndex + 1}/${totalStages}단계]`;
+    
+    const container = document.getElementById('stageDotsContainer');
+    container.innerHTML = '';
+    for (let i = 0; i < totalStages; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'dot';
+      if (i < currentStageIndex) dot.classList.add('cleared');
+      else if (i === currentStageIndex) dot.classList.add('active');
+      container.appendChild(dot);
+    }
+  }
+
+  function updateBPM(change) {
+    bpm = Math.min(155, Math.max(75, bpm + change));
+    const bpmEl = document.getElementById('bpmText');
+    const statusEl = document.getElementById('stressStatus');
+
+    bpmEl.innerText = `${bpm} BPM`;
+    if (change > 0) playHeartbeatSound();
+
+    if (bpm >= 120) {
+      eegColor = '#fb7185';
+      bpmEl.style.color = 'var(--accent-red)';
+      statusEl.innerText = 'MENTAL COLLAPSE';
+    } else if (bpm > 95) {
+      eegColor = '#facc15';
+      bpmEl.style.color = 'var(--accent-yellow)';
+      statusEl.innerText = 'DESTABILIZED';
+    } else {
+      eegColor = '#4ade80';
+      bpmEl.style.color = 'var(--accent-green)';
+      statusEl.innerText = 'STABLE';
+    }
+  }
+
+  function getStageHint() {
+    if (!currentCase) return;
+    const stage = currentCase.stages[currentStageIndex];
+    alert(`💡 [${stage.name} 추론 가이드]\n${stage.hint}`);
+  }
+
+  function sendQuestion() {
+    const input = document.getElementById('userInput');
+    const query = input.value.trim();
+    if (!query) return;
+
+    playClickSound();
+    const history = document.getElementById('chatHistory');
+    const item = document.createElement('div');
+    item.className = 'chat-item';
+    item.innerHTML = `<div class="q-text">추궁: ${query}</div><div class="a-text"><b>[논리 분석 중...]</b></div>`;
+    history.appendChild(item);
+    history.scrollTop = history.scrollHeight;
+    input.value = '';
+
+    setTimeout(() => {
+      const currentStage = currentCase.stages[currentStageIndex];
+      const isCorrect = currentStage.keyword.some(kw => query.includes(kw));
+
+      if (isCorrect) {
+        updateBPM(15);
+        currentStageIndex++;
+
+        if (currentStageIndex >= currentCase.stages.length) {
+          item.querySelector('.a-text').innerHTML = `<b>('${query}' 핵심을 찔려 주저앉으며)</b> 큭... 내 진술의 허점을 완벽하게 꿰뚫었군요... 인정합니다, 제가 범인입니다!`;
+          setTimeout(() => {
+            const randomEndingFact = endingScienceFacts[Math.floor(Math.random() * endingScienceFacts.length)];
+            document.getElementById('endingScienceFactBox').innerHTML = randomEndingFact;
+            document.getElementById('confession-modal').style.display = 'flex';
+          }, 800);
+        } else {
+          updateStageUI();
+          const nextStage = currentCase.stages[currentStageIndex];
+          item.querySelector('.a-text').innerHTML = `<b>(식은땀을 흘리며)</b> 방금 하신 말씀('<span style="color:var(--accent-blue);">${query}</span>')... 허를 찔렸군요!<br><br><span style="color:var(--accent-blue); font-weight:700;">[SYSTEM: 방어선 돌파 성공!]</span><br><b>(용의자의 다음 반박)</b> ${nextStage.initialMsg}`;
+        }
+      } else {
+        updateBPM(-5);
+        item.querySelector('.a-text').innerHTML = `<b>(콧방귀를 뀌며)</b> '<span style="color:var(--accent-blue);">${query}</span>'(이)라니요? 그런 추측성 주장에 제 방어선이 흔들릴 줄 아십니까?`;
+      }
+
+      history.scrollTop = history.scrollHeight;
+    }, 700);
+  }
+
+  function completeCase() {
+    playClickSound();
+    alert("🏆 [프로파일링 조서 결재 완료]\n사건 기록이 클라우드 세이브에 안전하게 동기화되었습니다.");
+    showTitle();
+  }
+
+  showTitle();
+</script>
 </body>
 </html>
